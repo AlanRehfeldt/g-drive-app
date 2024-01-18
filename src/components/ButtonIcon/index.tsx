@@ -4,11 +4,15 @@ import { Container } from "./styles"
 interface ButtonIconProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     icon: string
     alt?: string
+    handleReturn?: () => void
 }
 
-export function ButtonIcon({ icon, alt, ...rest }: ButtonIconProps) {
+export function ButtonIcon({ icon, alt, handleReturn, ...rest }: ButtonIconProps) {
     return (
-        <Container { ...rest }>
+        <Container 
+            onClick={ handleReturn }
+            { ...rest }
+        >
             <img src={ icon } alt={ alt } />
         </Container>
     )

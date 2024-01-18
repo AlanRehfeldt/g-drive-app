@@ -4,11 +4,20 @@ import { ButtonIcon } from "../ButtonIcon";
 
 import listview from "../../assets/listview.svg"
 import info from "../../assets/info.svg"
+import arrow from "../../assets/arrowright2.svg"
 
-export function Header({ title }: { title: string }) {
+interface IHeader {
+    title: string | null
+    handleReturn?: () => void
+}
+
+export function Header({ title, handleReturn }: IHeader) {
     return (
         <Container>
-            <span>{ title }</span>
+            <div>
+                <ButtonIcon icon={ arrow } handleReturn={handleReturn} />
+                <span>{ title }</span>
+            </div>
             <div>
                 <ButtonIcon icon={ listview } />
                 <ButtonIcon icon={ info } />

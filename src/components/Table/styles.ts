@@ -4,6 +4,12 @@ export const Container = styled.table`
     width: 100%;
     border-collapse: collapse;
     margin-top: 1.25rem;
+
+    > tbody {
+        > tr {
+            cursor: pointer
+        }
+    }
 `;
 
 export const TableHeader = styled.th`

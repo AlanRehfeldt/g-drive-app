@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { api } from '../services/api'
 import Cookies from 'js-cookie';
 
-interface userProps {
+export interface userProps {
         id: string
         name: string 
         email: string

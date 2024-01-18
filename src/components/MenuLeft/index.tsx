@@ -6,23 +6,25 @@ import { useAuth } from "../../hooks/auth";
 import { Container, MenuContent, StorageData } from "./styles";
 import { AddButton } from "../AddButton";
 import { SubMenu } from "../SubMenu"
-import { ModalForm } from "../ModalForm";
+import { ModalNewFolder } from "../ModalNewFolder";
+import { ModalNewFile } from "../ModalNewFile";
 import { Modal } from "../Modal"
 import { AddButtonPopup } from "../AddButtonPopup";
 
-import priority from "../../assets/priority.svg"
 import mydrive from "../../assets/mydrive.svg"
 import people from "../../assets/people.svg"
 import watch from "../../assets/watch.svg"
 import star from "../../assets/star.svg"
 import trash from "../../assets/trash.svg"
 import cloud from "../../assets/cloud.svg"
+import signout from "../../assets/signout.svg"
 
 interface MenuLeftProps {}
 
 export function MenuLeft(): MenuLeftProps {
-    const [showModal, setShowModal] = useState(false);
-    const [showPopup, setShowPopup] = useState(false);
+    const [ showModal, setShowModal] = useState(false);
+    const [ choseModal, setChoseModal ] = useState("folder")
+    const [ showPopup, setShowPopup] = useState(false);
     const buttonRef = useRef<HTMLDivElement | null>(null);
 
     const navigate = useNavigate()
@@ -36,11 +38,6 @@ export function MenuLeft(): MenuLeftProps {
         setShowModal(false);
         setShowPopup(false)
     }
-    
-    function handleSaveData() {
-        handleCloseModal();
-        // Enviar dados para o servidor
-    }
 
     function handleAddButtonClick() {
         setShowPopup(!showPopup);
@@ -49,8 +46,12 @@ export function MenuLeft(): MenuLeftProps {
     
     function handleOptionClick(option: string) {
         console.log(`Option clicked: ${option}`);
-
-        if (["New Folder", "File Upload", "Folder Upload"].includes(option)) {
+        if (["New Folder", "Folder Upload"].includes(option)) {
+            handleShowModal();
+        }
+        
+        if (["File Upload"].includes(option)) {
+            setChoseModal("file")
             handleShowModal();
         }
 
@@ -58,6 +59,7 @@ export function MenuLeft(): MenuLeftProps {
         document.removeEventListener("click", handleOutsideClick);
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     function handleOutsideClick(event: MouseEvent) {
         if (buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
             setShowPopup(false);
@@ -80,16 +82,16 @@ export function MenuLeft(): MenuLeftProps {
         <Container>
             <AddButton onClick={ handleAddButtonClick } />
             <Modal showModal={ showModal } handleClose={ handleCloseModal }>
-                <ModalForm saveData={ handleSaveData } />
+                { choseModal == "folder" ? <ModalNewFolder/> : <ModalNewFile /> }
             </Modal>
-            <AddButtonPopup isopen={showPopup} onOptionClick={handleOptionClick}/>
+            <AddButtonPopup isopen={showPopup} onOptionClick={handleOptionClick} />
             <MenuContent>
-                <SubMenu to="/" logo={ priority } label="All" />
                 <SubMenu to="mydrive" logo={ mydrive } label="My Drive" selected />
                 <SubMenu to="shared" logo={ people } label="Shared with me" />
-                <SubMenu to="#" logo={ watch } label="Recents" />
-                <SubMenu to="#" logo={ star } label="Stared" />
-                <SubMenu to="/" logo={ trash } label="Trash" onClick={ handleSignOut } />
+                <SubMenu to="#" logo={ watch } label="Recents" disabled />
+                <SubMenu to="#" logo={ star } label="Stared" disabled />
+                <SubMenu to="/#" logo={ trash } label="Trash" disabled />
+                <SubMenu to="/" logo={ signout } label="Signout" onClick={ handleSignOut } />
             </MenuContent>
             <StorageData>
                 <SubMenu to="#" logo={ cloud } label="Storage" />

@@ -8,11 +8,12 @@ interface SubMenuProps {
     selected?: boolean
     to: string
     onClick?: () => void;
+    disabled?: boolean
   }
 
-export function SubMenu({ logo, label, selected, to, onClick }: SubMenuProps) {
+export function SubMenu({ logo, label, selected, to, onClick, disabled }: SubMenuProps) {
     return (
-        <Container to={ to } onClick={onClick}>
+        <Container to={ to } onClick={onClick} className={ disabled ? "disabled" : "" }>
                 <img 
                     src={ arrowright } 
                     alt="Arrow indicationg selected sub menu" 

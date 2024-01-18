@@ -1,56 +1,56 @@
-// import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
-// import { useNavigate } from 'react-router-dom';
-import { FiUser, FiMail, FiLock } from 'react-icons/fi';
-// import { api } from '../../services/api';
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { api } from '../../services/api';
 
 import { Container, Form, Logo } from './styles';
 import { Input } from '../../components/Input';
 import { Button } from '../../components/Button';
 
+import { FiUser, FiMail, FiLock } from 'react-icons/fi';
 import logo from "../../assets/logo.svg"
 
 export function SignUp() {
-//   const [name, setName] = useState<string>("");
-//   const [email, setEmail] = useState<string>("");
-//   const [password, setPassword] = useState<string>("");
-//   const navigate = useNavigate();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
 
-//   function handleSignUp() {
-//     if (!name || !email || !password) {
-//       return alert("Preencha todos os campos");
-//     }
+  function handleSignUp() {
+    if (!name || !email || !password) {
+      return alert("Preencha todos os campos");
+    }
 
-//     api.post("/users", { name, email, password })
-//       .then(() => {
-//         alert("Usuário cadastrado com sucesso");
-//         navigate("/");
-//       })
-//       .catch((e) => {
-//         if (e.response) {
-//           alert(e.response.data.message);
-//         } else {
-//           alert("Não foi possível cadastrar");
-//         }
-//       });
-//   }
+    api.post("/users", { name, email, password })
+      .then(() => {
+        alert("Usuário cadastrado com sucesso");
+        navigate("/");
+      })
+      .catch((e) => {
+        if (e.response) {
+          alert(e.response.data.message);
+        } else {
+          alert("Não foi possível cadastrar");
+        }
+      });
+  }
 
-//   function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
-//     setName(e.target.value);
-//   }
+  function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
+    setName(e.target.value);
+  }
 
-//   function handleEmailChange(e: ChangeEvent<HTMLInputElement>) {
-//     setEmail(e.target.value);
-//   }
+  function handleEmailChange(e: ChangeEvent<HTMLInputElement>) {
+    setEmail(e.target.value);
+  }
 
-//   function handlePasswordChange(e: ChangeEvent<HTMLInputElement>) {
-//     setPassword(e.target.value);
-//   }
+  function handlePasswordChange(e: ChangeEvent<HTMLInputElement>) {
+    setPassword(e.target.value);
+  }
 
-//   function handleSubmit(e: FormEvent) {
-//     e.preventDefault();
-//     handleSignUp();
-//   }
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    handleSignUp();
+  }
 
     return (
         <Container>
@@ -59,7 +59,7 @@ export function SignUp() {
                 <span>G-Drive</span>
             </Logo>
             <Form 
-                // onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
             >
                 <h1>Sign Up</h1>
                 <p>A safe place to store all you files</p>
@@ -70,21 +70,21 @@ export function SignUp() {
                     placeholder="Nome"
                     type="text"
                     icon={FiUser}
-                    // onChange={handleNameChange}
+                    onChange={handleNameChange}
                 />
 
                 <Input
                     placeholder="E-mail"
                     type="email"
                     icon={FiMail}
-                    // onChange={handleEmailChange}
+                    onChange={handleEmailChange}
                 />
 
                 <Input
                     placeholder="Senha"
                     type="password"
                     icon={FiLock}
-                    // onChange={handlePasswordChange}
+                    onChange={handlePasswordChange}
                 />
 
                 <Button title="Cadastrar" type="submit" />

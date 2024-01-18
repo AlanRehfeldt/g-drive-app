@@ -20,4 +20,8 @@ export const Container = styled.header`
         justify-content: center;
         gap: 1.75rem;
     }
+
+    > div:first-child button {
+        transform: rotate(180deg);
+    }
 `
