@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate, useLocation } from 'react-router-dom'
-
 import { api } from "../../services/api";
 
 import { Container } from "./styles"
-import { Table, IData, IFolderFile } from "../../components/Table"
+import { Table } from "../../components/Table"
 import { Header } from "../../components/Header";
+
+import { IFolderFile } from "../../@types/shared/IFolderFile";
+import { IData } from "../../@types/shared/IData";
 
 export function Shared() {
   const [ data, setData ] = useState<IData>();
@@ -23,22 +25,23 @@ export function Shared() {
     console.log(file.name)
     setCount((prevState) => prevState + 1)
     const queryPath = searchParams.get("path")
-    searchParams.set("queryPath", queryPath)
-    setPath(() => queryPath)
+    searchParams.set("queryPath", queryPath as string)
+    setPath(() => queryPath as string)
   }
 
   function handleReturn() {
-      const queryParam: string = searchParams.get("path");
-      const query: string[] = queryParam.split('-');
-      query.pop();
-      const newQueryParam: string = query.join('-'); 
+      const queryParam: string | null = searchParams.get("path");
+      if (queryParam) {
+        const query: string[] = queryParam.split('-');
+        query.pop();
+        const newQueryParam: string = query.join('-'); 
 
-      navigate(`${location.pathname}?path=${newQueryParam}`)
+        navigate(`${location.pathname}?path=${newQueryParam}`)
 
-      setCount((prevState) => prevState + 1)
-      searchParams.set("queryPath", newQueryParam)
-      setPath(() => newQueryParam)
-
+        setCount((prevState) => prevState + 1)
+        searchParams.set("queryPath", newQueryParam)
+        setPath(() => newQueryParam)
+      }
   }
 
   const fetchData = useCallback(async () => {
