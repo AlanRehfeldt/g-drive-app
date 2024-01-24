@@ -1,6 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
-import { useNavigate, useLocation } from 'react-router-dom'
 import { api } from "../../services/api";
 
 import { Container } from "./styles"
@@ -12,52 +10,28 @@ import { IData } from "../../@types/shared/IData";
 
 export function Home() {
   const [ data, setData ] = useState<IData>();
-  const [ searchParams ] = useSearchParams();
-  const [ path, setPath ] = useState<string>("home");
-  const [ folderList, setFolderList ] = useState<string[]>(["Home"]);
-
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [ folder, setFolder ] = useState<string>("");
+  const [ folderList, setFolderList ] = useState<IFolderFile[]>([]);
 
   function handleClick(file: IFolderFile) {
-    navigate(`${location.pathname}?path=${file.path}-${file.name}`);
-    setFolderList((prevState) => {
-      const newFolderList = [...prevState];
-      return newFolderList  
-    });
-    const queryPath = searchParams.get("path");
-    searchParams.set("queryPath", queryPath as string);
-    setPath(() => queryPath as string);
+    setFolder(file.id)
+    setFolderList(prevState => [...prevState, file])
   }
 
   function handleReturn() {
-    const queryParam = searchParams.get("path");
-    if (queryParam) {
-      const query: string[] = queryParam.split("-");
-      query.pop();
-      const newQueryParam: string = query.join("-");
+    const newFolderList = [...folderList]
+    newFolderList.pop()
+    if (newFolderList) setFolderList(newFolderList)
 
-      navigate(`${location.pathname}?path=${newQueryParam}`);
-
-      setFolderList((prevState) => {
-        const newFolderList = [...prevState];
-        console.log(searchParams.get("path"));
-        if(prevState.length > 1 || searchParams.get("path") === "home") {
-          newFolderList.pop();
-        }
-        return newFolderList;
-      });
-      searchParams.set("queryPath", newQueryParam);
-      setPath(() => newQueryParam);
-    }
+    setFolder(newFolderList[newFolderList.length - 1]?.id || "")
   }
 
   const fetchData = useCallback(async () => {
     const response = await api.get(
-      `/folders?path=${path == "home" ? "home" : searchParams.get("path")}`
+      `/folders${folder ? `/${folder}` : ""}`
     );
     setData(response.data);
-  }, [searchParams, path, folderList]);
+  }, [folder]);
 
   useEffect(() => {
     fetchData();
@@ -65,10 +39,13 @@ export function Home() {
 
   return (
     <Container>
-      <Header
-        title={folderList.join(" -> ")}
-        handleReturn={handleReturn}
-      />
+      <Header handleReturn={handleReturn} >
+        <span>Home</span>
+        { folderList.length === 0 ? "" :
+          folderList.map(folder => 
+            <span key={ folder.id }>{ folder.name }</span>)
+        }
+      </Header>
       <Table dataReturn={data?.dataReturn || []} handleEnterFolder={handleClick} />
     </Container>
   );

@@ -7,16 +7,16 @@ import info from "../../assets/info.svg"
 import arrow from "../../assets/arrowright2.svg"
 
 interface IHeader {
-    title: string | null
+    children: React.ReactNode
     handleReturn?: () => void
 }
 
-export function Header({ title, handleReturn }: IHeader) {
+export function Header({ children, handleReturn }: IHeader) {
     return (
         <Container>
             <div>
                 <ButtonIcon icon={ arrow } handleReturn={handleReturn} />
-                <span>{ title }</span>
+                { children }
             </div>
             <div>
                 <ButtonIcon icon={ listview } />

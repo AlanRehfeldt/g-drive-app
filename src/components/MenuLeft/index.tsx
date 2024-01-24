@@ -11,6 +11,7 @@ import { ModalNewFile } from "../ModalNewFile";
 import { Modal } from "../Modal"
 import { AddButtonPopup } from "../AddButtonPopup";
 
+import home from "../../assets/home.svg"
 import mydrive from "../../assets/mydrive.svg"
 import people from "../../assets/people.svg"
 import watch from "../../assets/watch.svg"
@@ -86,6 +87,7 @@ export function MenuLeft(): MenuLeftProps {
             </Modal>
             <AddButtonPopup isopen={showPopup} onOptionClick={handleOptionClick} />
             <MenuContent>
+                <SubMenu to="/" logo={ home } label="Home" />
                 <SubMenu to="mydrive" logo={ mydrive } label="My Drive" selected />
                 <SubMenu to="shared" logo={ people } label="Shared with me" />
                 <SubMenu to="#" logo={ watch } label="Recents" disabled />

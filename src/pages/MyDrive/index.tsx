@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { api } from "../../services/api";
 
 import { Container } from "./styles"
@@ -11,55 +10,43 @@ import { IData } from "../../@types/shared/IData";
 
 export function MyDrive() {
   const [ data, setData ] = useState<IData>();
-  const [ searchParams ] = useSearchParams();
-  const [ path, setPath ] = useState<string>("home");
-  const [ count, setCount ] = useState<number>(0)
-
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [ folder, setFolder ] = useState<string>("");
+  const [ folderList, setFolderList ] = useState<IFolderFile[]>([]);
 
   function handleClick(file: IFolderFile) {
-    navigate(`${location.pathname}?path=${file.path}-${file.name}`)
-    setCount((prevState) => prevState + 1)
-    const queryPath = searchParams.get("path")
-    searchParams.set("queryPath", queryPath as string)
-    setPath(() => queryPath as string)
+    setFolder(file.id)
+    setFolderList(prevState => [...prevState, file])
   }
 
   function handleReturn() {
-      const queryParam: string | null = searchParams.get("path");
-      if (queryParam) {
-        const query: string[] = queryParam.split('-');
-        query.pop();
-        const newQueryParam: string = query.join('-'); 
+    const newFolderList = [...folderList]
+    newFolderList.pop()
+    if (newFolderList) setFolderList(newFolderList)
 
-        navigate(`${location.pathname}?path=${newQueryParam}`)
-
-        setCount((prevState) => prevState + 1)
-        searchParams.set("queryPath", newQueryParam)
-        setPath(() => newQueryParam)
-      }
+    setFolder(newFolderList[newFolderList.length - 1]?.id || "")
   }
 
   const fetchData = useCallback(async () => {
-    const response = await api.get(`/folders?path=${path == "home" ? "home" : searchParams.get("path")}`);
-    console.log(response)
-    console.log(searchParams.get("path"))
+    const response = await api.get(
+      `/folders${folder ? `/${folder}` : ""}`
+    );
     setData(response.data);
-
-  }, [searchParams, path, count]);
+  }, [folder]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-    return (
-        <Container>
-            <Header 
-              title={ searchParams.get("path") == null ? "MyDrive" : searchParams.get("path") } 
-              handleReturn={ handleReturn }
-            />
-            <Table dataReturn={data?.dataReturn || []} handleEnterFolder={handleClick} />
-        </Container>
-    )
+  return (
+    <Container>
+      <Header handleReturn={handleReturn} >
+        <span>My Drive</span>
+        { folderList.length === 0 ? "" :
+          folderList.map(folder => 
+            <span key={ folder.id }>{ folder.name }</span>)
+        }
+      </Header>
+      <Table dataReturn={data?.dataReturn || []} handleEnterFolder={handleClick} />
+    </Container>
+  );
 }
